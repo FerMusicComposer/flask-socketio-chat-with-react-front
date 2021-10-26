@@ -4,7 +4,6 @@ import closeIcon from '../styles/icons/closeIcon.png';
 import onlineIcon from '../styles/icons/onlineIcon.png';
 
 const InfoBar = ({ room }) => {
-    console.log(room);
     return (
         <div className="infoBar">
             <div className="leftInnerContainer">

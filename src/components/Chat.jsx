@@ -24,23 +24,33 @@ const Chat = () => {
         setName(name);
         setRoom(room);
 
+        const data = {
+            user: name,
+            room: room,
+        };
+        socket.on('connect', () => {
+            socket.emit('message', data);
+        });
+
         // This method passes an action and data to the backend. On 'join' it passes both
         //name and room to the server. The 3rd parameter is a callback comming from the
         //server which is usually used for error handling
-        socket.emit('join', { name, room }, () => {});
+        socket.emit('join', data, () => {});
 
         // The cleanup function of this useEffect, returns a function that emits the 'disconnect'
         // event defined on the backend, and also turns the socket off.
         return () => {
-            socket.emit('disconnect', { name });
+            socket.emit('disconnect', data);
 
             socket.off();
         };
-    }, [ENDPONT, window.location.search]);
+    }, [ENDPONT]);
 
     // This useEffect handles the pushing of messages into a messages array
     useEffect(() => {
         socket.on('message', message => {
+            console.log('from chat useEffect: ', message);
+
             setMessages([...messages, message]);
         });
     }, [messages]);
@@ -54,9 +64,8 @@ const Chat = () => {
             socket.emit('sendMessage', message, () => setMessage(''));
         }
     };
-
-    console.log(message, messages, room);
-
+    console.log('from chat: messages: ', messages);
+    console.log('from chat: name: ', name);
     return (
         <div className="outterContainer">
             <div className="container">
